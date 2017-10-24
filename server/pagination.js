@@ -7,6 +7,7 @@ export function publishPagination(collection, settingsIn) {
   const settings = _.extend(
     {
       name: collection._name,
+      clientCollection: collection._name,
       filters: {},
       dynamic_filters() {
         return {};
@@ -94,22 +95,22 @@ export function publishPagination(collection, settingsIn) {
       const docs = collection.find(findQuery, options).fetch();
 
       _.each(docs, function(doc) {
-            self.added(collection._name, doc._id, doc);
+            self.added(options.clientCollection, doc._id, doc);
 
-            self.changed(collection._name, doc._id, {[`sub_${self._subscriptionId}`]: 1});
+            self.changed(options.clientCollection, doc._id, {[`sub_${self._subscriptionId}`]: 1});
       });
     } else {
         const handle = collection.find(findQuery, options).observeChanges({
             added(id, fields) {
-                self.added(collection._name, id, fields);
+                self.added(options.clientCollection, id, fields);
 
-                self.changed(collection._name, id, {[`sub_${self._subscriptionId}`]: 1});
+                self.changed(options.clientCollection, id, {[`sub_${self._subscriptionId}`]: 1});
             },
             changed(id, fields) {
-                self.changed(collection._name, id, fields);
+                self.changed(options.clientCollection, id, fields);
             },
             removed(id) {
-                self.removed(collection._name, id);
+                self.removed(options.clientCollection, id);
             },
         });
 
