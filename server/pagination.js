@@ -95,22 +95,22 @@ export function publishPagination(collection, settingsIn) {
       const docs = collection.find(findQuery, options).fetch();
 
       _.each(docs, function(doc) {
-            self.added(options.clientCollection, doc._id, doc);
+            self.added(settings.clientCollection, doc._id, doc);
 
-            self.changed(options.clientCollection, doc._id, {[`sub_${self._subscriptionId}`]: 1});
+            self.changed(settings.clientCollection, doc._id, {[`sub_${self._subscriptionId}`]: 1});
       });
     } else {
         const handle = collection.find(findQuery, options).observeChanges({
             added(id, fields) {
-                self.added(options.clientCollection, id, fields);
+                self.added(settings.clientCollection, id, fields);
 
-                self.changed(options.clientCollection, id, {[`sub_${self._subscriptionId}`]: 1});
+                self.changed(settings.clientCollection, id, {[`sub_${self._subscriptionId}`]: 1});
             },
             changed(id, fields) {
-                self.changed(options.clientCollection, id, fields);
+                self.changed(settings.clientCollection, id, fields);
             },
             removed(id) {
-                self.removed(options.clientCollection, id);
+                self.removed(settings.clientCollection, id);
             },
         });
 
